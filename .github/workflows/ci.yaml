@@ -1,0 +1,25 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
+    - name: Install dependencies
+      run: poetry install --with dev
+    - name: Analyzing the code with black
+      run: |
+          poetry run black $(git ls-files '*.py')
+    - name: Analyzing the code with pylint
+      run: |
+        poetry run pylint $(git ls-files '*.py')
