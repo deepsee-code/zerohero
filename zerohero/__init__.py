@@ -4,10 +4,10 @@ import openai
 import torch
 from sentence_transformers import util
 
-from embedding_functions.sentance_transformers import (
+from zerohero.embedding_functions.sentence_transformers import (
     make_sentence_transformers_embedding_function,
 )
-from embedding_functions.openai import make_openai_embedding_function
+from zerohero.embedding_functions.openai import make_openai_embedding_function
 
 
 MODEL_TYPES = {"openai", "sentence-transformers"}
