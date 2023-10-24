@@ -10,4 +10,4 @@ def test_sentence_transformers():
         model_type="sentence-transformers",
         model_name="paraphrase-albert-small-v2",
     )
-    print(zsc("I really like zerohero!"))
+    zsc("I really like zerohero!")
