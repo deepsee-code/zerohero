@@ -4,6 +4,7 @@ on: [push]
 
 env:
   OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  CUDA_VISIBLE_DEVICES: ""
 
 jobs:
   build:
