@@ -22,8 +22,6 @@ jobs:
         cache: 'poetry'
     - name: Install dependencies
       run: poetry install --with dev
-    - name: Install cublas
-      run: poetry add nvidia-cublas-cu11
     - name: Analyzing the code with black
       run: |
           poetry run black $(git ls-files '*.py')
