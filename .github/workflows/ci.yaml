@@ -22,7 +22,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: 'poetry'
     - name: Install dependencies
-      run: poetry update && poetry install --with dev
+      run: poetry update --lock && poetry install --with dev
       # run: |
       #   poetry export -f requirements.txt --output requirements.txt --without-hashes --with dev && \
       #   pip install -r requirements.txt
