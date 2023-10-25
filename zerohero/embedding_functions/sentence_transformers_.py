@@ -1,4 +1,5 @@
 """Makes a embedding function from a sentence_transformers model."""
+import numpy as np
 from sentence_transformers import SentenceTransformer
 
 
@@ -14,6 +15,6 @@ def make_sentence_transformers_embedding_function(model_name: str):
     model = SentenceTransformer(model_name)
 
     def sentence_transformers_embedding_function(text):
-        return model.encode(text)
+        return np.array(model.encode(text))
 
     return sentence_transformers_embedding_function
