@@ -2,6 +2,9 @@ name: CI
 
 on: [push]
 
+env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,3 +28,6 @@ jobs:
     - name: Analyzing the code with pylint
       run: |
         poetry run pylint $(git ls-files '*.py')
+    - name: Run Test Suite
+      run: |
+        poetry run pytest -s --cov zerohero
