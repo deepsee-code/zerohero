@@ -6,15 +6,15 @@ from collections import OrderedDict
 from collections.abc import Callable
 from typing import Literal
 
+import numpy as np
 import openai
 import torch
 from sentence_transformers import util
 
-from zerohero.embedding_functions.sentence_transformers import (
+from zerohero.embedding_functions.openai_ import make_openai_embedding_function
+from zerohero.embedding_functions.sentence_transformers_ import (
     make_sentence_transformers_embedding_function,
 )
-from zerohero.embedding_functions.openai import make_openai_embedding_function
-
 
 MODEL_TYPES = {"openai", "sentence-transformers"}
 
@@ -96,7 +96,7 @@ def make_zero_shot_classifier(
 
 def _make_zero_shot_embedding_classifier(categories, embedding_function):
     categories_encoded = torch.tensor(
-        [embedding_function(category) for category in categories]
+        np.array([embedding_function(category) for category in categories])
     )
 
     def embedding_classifier(text):
