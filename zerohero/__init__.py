@@ -1,19 +1,66 @@
-from collections import OrderedDict
+"""Interface and functions that are generic across backends.
+`make_zero_shot_classifier` is currently the only public function.
+"""
 
+from collections import OrderedDict
+from collections.abc import Callable
+from typing import Literal
+
+import numpy as np
 import openai
 import torch
 from sentence_transformers import util
 
-from embedding_functions.sentance_transformers import (
+from zerohero.embedding_functions.openai_ import make_openai_embedding_function
+from zerohero.embedding_functions.sentence_transformers_ import (
     make_sentence_transformers_embedding_function,
 )
-from embedding_functions.openai import make_openai_embedding_function
-
 
 MODEL_TYPES = {"openai", "sentence-transformers"}
 
 
-def make_zero_shot_classifier(categories, model_type, model_name, openai_api_key=None):
+def make_zero_shot_classifier(
+    categories: list,
+    model_type: Literal["sentence-transformers", "openai"],
+    model_name: str,
+    openai_api_key: str = None,
+) -> Callable[[str], dict]:
+    """Given as list of possible categories,
+    returns a function that takes a string of text to be classified
+    and returns a dictionary of classification results
+    created by a zero-shot classifier based on embedding created
+    by the specified model.
+
+    The function's output dict's keys and values are:
+
+    category (str): the predicted category
+        (selected from the categories according to cosine similarity of the embeddings).
+    probability (float): the probability (between 0 and 1) of the selected category
+        (according to "distribution").
+    similarities (dict): A dictionary containing the similarities.
+        The keys are the categories,
+        the values are the cosine similarities (between -1 and 1)
+        between the text's embedding and the categories embedding.
+    distribution (dict): A dictionary containing the probability distribution.
+        The keys are the categories,
+        the value is the probability (between 0 and 1)
+        calculated by applying softmax to the "similarities".
+
+    Args:
+        categories (list): A list of possible categories.
+            For best results, categories should be straightforward and meaningful.
+        model_type (str): One of "openai" or "sentence-transformers".
+        model_name (str): An embedding model that matches the model_type.
+            For a list of supported embedding models for model_type="openai" see:
+            https://platform.openai.com/docs/models/embeddings
+            For a list of supported embedding models for model_type="sentence-transformers" see:
+            https://www.sbert.net/docs/pretrained_models.html#model-overview
+        openai_api_key (str, optional): When model_type="openai", must pass an OpenAI API key.
+            Defaults to None.
+
+    Returns:
+        Callable[[str], dict]: The embedding based zero-shot classifier.
+    """
     if not model_type in MODEL_TYPES:
         raise ValueError(
             f"{model_type=} not valid, must be one of {', '.join(MODEL_TYPES)}"
@@ -49,7 +96,7 @@ def make_zero_shot_classifier(categories, model_type, model_name, openai_api_key
 
 def _make_zero_shot_embedding_classifier(categories, embedding_function):
     categories_encoded = torch.tensor(
-        [embedding_function(category) for category in categories]
+        np.array([embedding_function(category) for category in categories])
     )
 
     def embedding_classifier(text):
@@ -77,10 +124,10 @@ def _make_zero_shot_embedding_classifier(categories, embedding_function):
         category_confidence = list(distribution_sorted.values())[0]
 
         return {
-            "predicted_category": category,
-            "predicted_category_confidence": category_confidence,
-            "predicted_category_distribution": dict(distribution_sorted),
-            "category_similarities": category_similarities,
+            "category": category,
+            "probability": category_confidence,
+            "distribution": dict(distribution_sorted),
+            "similarities": category_similarities,
         }
 
     return embedding_classifier
