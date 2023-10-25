@@ -1,7 +1,9 @@
 """Makes a embedding function from a openai model."""
+
 import backoff
 import tiktoken
 import openai
+import numpy as np
 
 OPENAI_MODEL_NAME_TO_MAX_TOKENS = {"text-embedding-ada-002": 8191}
 
@@ -67,8 +69,10 @@ def make_openai_embedding_function(model_name, openai_api_key):
     def _openai_embedding_function(text):
         truncated_text = encoding.decode(encoding.encode(text)[:max_tokens])
 
-        return openai.Embedding.create(input=truncated_text, model=model_name)["data"][
-            0
-        ]["embedding"]
+        return np.array(
+            openai.Embedding.create(input=truncated_text, model=model_name)["data"][0][
+                "embedding"
+            ]
+        )
 
     return _openai_embedding_function
