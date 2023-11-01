@@ -10,11 +10,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Publish PyPi package
-        uses: code-specialist/pypi-poetry-publish@v1
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.17
         with:
-          PACKAGE_DIRECTORY: "./zerohero/"
-          PYTHON_VERSION: "3.10"
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_REGISTRY_PASSWORD: ${{ secrets.PUBLISH_REGISTRY_PASSWORD }}
-          BRANCH: main
+          pypi_token: ${{ secrets.PUBLISH_REGISTRY_PASSWORD }}
+          ignore_dev_requirements: "yes"
