@@ -20,7 +20,7 @@ To use Zero Hero, you first need to install the package using pip:
 pip install zerohero
 ```
 Once the package is installed, you can create a classifier using the following code:
-```
+```python
 from zerohero import make_zero_shot_classifier
 
 # Create a classifier and pass the categories you wish to classify
@@ -32,14 +32,14 @@ classifier = make_zero_shot_classifier(
 )
 ```
 Note that the categories passed to the classifier need to be semantically meaningful, i.e. categories of 1,2,3,4 would not be appropriate. Once you have created a classifier, you can use it to classify text using the following code:
-```
+
+```python
 # Classify a piece of text
 text = 'The president gave a speech today about the economy.'
-similarities = classifier.classify_text(text)
+result = classifier(text)
 
 # Print the category
-idx = np.argmax(similarities)
-print(categories[idx])
+result["category"]
 ```
 This will print the following output:
 ```
