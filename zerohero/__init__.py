@@ -77,8 +77,7 @@ def make_zero_shot_classifier(
             )
 
         openai.api_key = openai_api_key
-
-        model_names = [model["root"] for model in openai.Model.list()["data"]]
+        model_names = [model["id"] for model in openai.Model.list()["data"]]
 
         if not model_name in model_names:
             raise ValueError(
