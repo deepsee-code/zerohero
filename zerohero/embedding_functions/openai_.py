@@ -47,7 +47,10 @@ def make_openai_embedding_function(model_name, openai_api_key):
 
     max_tokens = _openai_lookup_max_tokens(model_name=model_name)
 
-    encoding = tiktoken.encoding_for_model(model_name)
+    try:
+        encoding = tiktoken.encoding_for_model(model_name)
+    except KeyError:
+        encoding = tiktoken.get_encoding("cl100k_base")
 
     # do a dry run to see if embeddings are supported by the passed model
     try:

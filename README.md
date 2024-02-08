@@ -13,13 +13,21 @@ There are several reasons why you’d want to use Zero Hero:
  - It’s accurate. Zero Hero has been shown to be accurate on a variety of tasks.
  - It’s fast. Zero Hero is very efficient and can classify text quickly.
 
-### How to use Zero Hero
+### Installation
 
 To use Zero Hero, you first need to install the package using pip:
 ```
 pip install zerohero
 ```
-Once the package is installed, you can create a classifier using the following code:
+
+### How to use Zero Hero with SentenceTransformers (Easy)
+
+
+To use SentenceTransformers, `model_type` must be passed as "sentence-transformers" and `model_name` supports any of [these](https://www.sbert.net/docs/pretrained_models.html) models.  
+
+For examples:  
+
+
 ```python
 from zerohero import make_zero_shot_classifier
 
@@ -46,6 +54,43 @@ This will print the following output:
 business
 ```
 This output indicates the classifier is most confident that the text pertains to business.
+
+### Using Zero Hero with OpenAI embedding models
+
+In order to use and OpenAI model, you'll need an OpenAI API key.
+
+Pass `model_type` as "open_ai" and `openai_api_key` as your OpenAI API key.
+
+`model_name` can be any of:
+
+```
+"text-embedding-3-small",
+"text-embedding-3-large",
+"text-embedding-ada-002"
+```
+
+and should support other OpenAI embedding models as they are released.  
+
+[Here](https://platform.openai.com/docs/guides/embeddings/embedding-models) is a list of current embedding models as OpenAI releases them. 
+
+Here is an example:
+
+
+```python
+
+openai_api_key = "sk-..."
+
+categories = ["cat", "dog", "mouse", "human"]
+        zsc = make_zero_shot_classifier(
+            categories=categories,
+            model_type="openai",
+            model_name=model_name,
+            openai_api_key=openai_api_key,
+        )
+        result = zsc(cat_text)
+        print(result)
+```
+
 
 ### Why use Zero Hero instead of a prompt-based classifier?
 
