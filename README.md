@@ -77,18 +77,25 @@ Here is an example:
 
 
 ```python
+from zerohero import make_zero_shot_classifier
 
 openai_api_key = "sk-..."
 
+cat_text = (
+        "The cat (Felis catus), "
+        "commonly referred to as the domestic cat or house cat, "
+        "is the only domesticated species in the family Felidae. "
+)
+
 categories = ["cat", "dog", "mouse", "human"]
-        zsc = make_zero_shot_classifier(
+zsc = make_zero_shot_classifier(
             categories=categories,
             model_type="openai",
-            model_name=model_name,
+            model_name="text-embedding-3-large",
             openai_api_key=openai_api_key,
         )
-        result = zsc(cat_text)
-        print(result)
+result = zsc(cat_text)
+print(result)
 ```
 
 
